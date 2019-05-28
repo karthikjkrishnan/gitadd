@@ -1,0 +1,57 @@
+create Database PROBLEMSET001;
+use PROBLEMSET001;
+create table hotel_table(Hotel_no varchar(10),name varchar(64),city varchar(64));
+create table room_table(room_no int(10) primary key,Hotel_no varchar(64),type varchar(10),price Decimal(10,2));
+create table booking_table (Hotel_no varchar(10),guest_no varchar(20),Date_from date,date_to date,room_no int(10));
+create table guest_table(guest_no varchar(20),name varchar(64),city varchar(20));
+Insert into hotel_table values('H111','Empire Hotel','New York');
+Insert into hotel_table values('H235','Park Place','New York');
+Insert into hotel_table values('H432','Brownstone Hotel','Toronto');
+Insert into hotel_table values('H498','James Plaza','Toronto');
+Insert into hotel_table values('H193','Devon Hotel','Boston');
+Insert into hotel_table values('H437','Clairmont Hotel','Boston');
+
+Insert into room_table values(876,'H432','S',124.00);
+
+insert into booking_table values('H235','G230','15-SEP-99','18-SEP-99',467);
+
+insert into guest_table values('G190','Edward Cane','Baltimore');
+
+1)select * from  hotel_table;
+
+2)select * from hotel_table where city="New York";
+
+3)select name,city from guest_table order by city;
+
+4)select * from room_table where type='N' order by price;
+
+5)select count(*) from hotel_table;
+
+6)select distinct city from guest_table ;
+
+7)select avg(price) from room_table;
+
+8)select h.name ,r.room_no,r.type from room_table as r inner join hotel_table as h on 
+r.Hotel_no=h.Hotel_no;
+
+9)select name,Date_from,date_to,room_no from booking_table b 
+inner join hotel_table h on h.Hotel_no=b.Hotel_no where h.city='New York';
+
+10)select count(*) from booking_table where booking_table.Date_from like '%SEP%';
+
+11)select g.name ,g.city from guest_table as g inner join booking_table as b on g.guest_no=b.guest_no
+inner join hotel_table as h on h.Hotel_no=b.Hotel_no where h.city="New York" and date_from like "%AUG%";
+
+12)select * from hotel_table where hotel_no not in(select hotel_no from booking_table); 
+
+13)with highest_salaries as (select h.name,h.city,dense_rank() over(order by r.price desc) as high_sal 
+from hotel_table as h
+inner join room_table as r on r.hotel_no=h.hotel_no)
+select name,city from highest_salaries where high_sal=1;
+
+14)select h.name,h.city,r.room_no,r.price from hotel_table as h inner join room_table as r on
+h.hotel_no=r.hotel_no where r.price<(select min(r.price) from room_table as r inner join hotel_table as h 
+where h.name='Brownstone Hotel');
+
+15)select r.room_no,avg(r.price) from room_table as r inner join hotel_table as h 
+on r.hotel_no = h.hotel_no group by h.city;
